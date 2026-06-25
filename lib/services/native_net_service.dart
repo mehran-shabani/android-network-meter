@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import 'models.dart';
+import '../models/usage_models.dart';
 
 class NativeNetService {
   static const MethodChannel _channel = MethodChannel('ir.helssa.netmeter/traffic');

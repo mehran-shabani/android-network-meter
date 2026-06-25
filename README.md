@@ -1,18 +1,53 @@
-# Net Meter Flutter
+# Android Network Meter
 
-A Flutter + native Android sample app for monitoring **mobile/SIM data only**:
+Flutter + native Android app for monitoring **mobile/SIM internet only**. Wi‑Fi traffic is intentionally excluded from reports.
 
-- live mobile internet speed
-- active data SIM / slot label
-- mobile data usage for the whole phone
-- mobile data usage per app
-- adjustable time ranges
-- charts
-- PDF share/export
+## Features
 
-## Android reality check
+- Persian / RTL Material 3 UI.
+- Live mobile data speed updated every second:
+  - download speed
+  - upload speed
+  - total speed
+  - active network detection so Wi‑Fi/inactive cellular is explained clearly.
+- Active data SIM information where Android allows it:
+  - SIM slot index
+  - carrier/display name
+  - subscription ID
+  - dual-SIM friendly display.
+- Mobile-only usage reports powered by Android `NetworkStatsManager`:
+  - queries `ConnectivityManager.TYPE_MOBILE`
+  - total download/upload/combined usage
+  - per-app mobile usage sorted by highest usage
+  - app name, package name, download, upload, total
+  - search/filter by app name or package.
+- Time ranges:
+  - 1 hour, 6 hours, 24 hours, 7 days, 30 days
+  - custom date range
+  - selectable chart bucket count/resolution.
+- Charts with `fl_chart` for mobile usage trends.
+- PDF export with `pdf` and `printing`, including range, active SIM, totals, top apps, selected app, and timeline summaries.
+- Friendly loading, empty, permission, and error states.
 
-Android allows per-app traffic stats through `NetworkStatsManager`, but the user must enable **Usage Access** for this app. On Android 10+ subscriber identifiers are restricted; this project queries mobile traffic with `subscriberId = null`, so historical usage is usually **all mobile data combined**. The app can still show the **currently active data SIM** with `SubscriptionManager.getActiveDataSubscriptionId()` when permission/device support allows it.
+## Android limitations
+
+Android does **not** reliably expose historical per-SIM traffic to normal apps on modern releases. This app therefore:
+
+- shows the **current active data SIM** using native subscription APIs when available;
+- queries historical traffic as **all mobile data combined** using `TYPE_MOBILE` and `subscriberId = null`;
+- never fakes per-SIM historical usage;
+- displays the limitation in the UI so users know that historical per-SIM separation may not be available.
+
+If Wi‑Fi is the active network, live mobile speed can be zero or inactive even though the device has a SIM.
+
+## Required permissions
+
+- `PACKAGE_USAGE_STATS` / Usage Access: required for per-app mobile usage from `NetworkStatsManager`.
+- `READ_PHONE_STATE`: requested only when SIM details are needed and Android requires it.
+- `ACCESS_NETWORK_STATE`: active network transport detection.
+- `QUERY_ALL_PACKAGES`: helps resolve package names and labels for per-app usage. Google Play heavily restricts this permission; production Play releases may need a policy-compliant alternative or justification.
+
+The app handles denied permissions gracefully. Per-app usage screens show: **Per-app mobile usage requires Usage Access.**
 
 ## How to run
 
@@ -21,27 +56,27 @@ flutter pub get
 flutter run
 ```
 
-If Gradle wrapper files are missing in your environment, create a fresh Flutter project and copy these files over it:
+Run quality checks:
 
 ```bash
-flutter create --platforms=android net_meter_flutter
-# then copy this zip content over the generated project
-flutter pub get
-flutter run
+flutter analyze
+flutter test
 ```
 
-## Permissions
+## Troubleshooting
 
-Inside the app, tap:
+- **No per-app data:** open Usage Access settings from the app and enable access.
+- **SIM name/slot missing:** Android version, device policy, or denied phone permission may restrict subscription details.
+- **Report is empty:** choose a wider time range, verify mobile data was used, and confirm Usage Access is enabled.
+- **Wi‑Fi appears active:** reports still exclude Wi‑Fi; live mobile speed can be zero while Wi‑Fi carries current traffic.
+- **Google Play warning:** review `QUERY_ALL_PACKAGES` policy before publishing.
 
-1. **فعال‌سازی Usage Access** and enable this app.
-2. Allow phone permission if Android asks, so the app can read active SIM/slot information.
+## Screenshots
 
-`QUERY_ALL_PACKAGES` is included because app-wide per-package labels require seeing installed packages. This is fine for private/internal builds, but Google Play may require a policy justification.
+Actual screenshots are not included in this repository yet. Suggested placeholders:
 
-## Main files
-
-- `lib/main.dart` UI and orchestration
-- `lib/services/native_traffic_service.dart` MethodChannel bridge
-- `lib/services/pdf_report_service.dart` PDF generator
-- `android/app/src/main/kotlin/ir/helssa/netmeter/MainActivity.kt` native traffic/SIM implementation
+- Home dashboard with live speed and SIM card.
+- Mobile usage report with totals.
+- Per-app usage list and search.
+- Timeline chart.
+- PDF export preview.
