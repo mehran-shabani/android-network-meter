@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "ir.helssa.netmeter"
-        minSdk = 23
+        minSdk = flutter.minSdkVersion
         targetSdk = 36
         versionCode = 1
         versionName = "0.1.0"
