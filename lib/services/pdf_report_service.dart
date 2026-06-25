@@ -2,7 +2,8 @@ import 'dart:typed_data';
 
 import 'package:pdf/widgets.dart' as pw;
 
-import 'models.dart';
+import '../models/usage_models.dart';
+import '../utils/formatters.dart';
 
 class PdfReport {
   Future<Uint8List> build({
@@ -25,9 +26,9 @@ class PdfReport {
           pw.TableHelper.fromTextArray(
             headers: const ['Metric', 'Value'],
             data: [
-              ['Download', bytes(report.totalRxBytes)],
-              ['Upload', bytes(report.totalTxBytes)],
-              ['Total', bytes(report.totalBytes)],
+              ['Download', formatBytes(report.totalRxBytes)],
+              ['Upload', formatBytes(report.totalTxBytes)],
+              ['Total', formatBytes(report.totalBytes)],
               ['Apps', apps.length.toString()],
             ],
           ),
@@ -35,7 +36,7 @@ class PdfReport {
           pw.Text('Top apps', style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold)),
           pw.TableHelper.fromTextArray(
             headers: const ['App', 'Package', 'Download', 'Upload', 'Total'],
-            data: apps.map((a) => [a.appName, a.packageName, bytes(a.rxBytes), bytes(a.txBytes), bytes(a.totalBytes)]).toList(),
+            data: apps.map((a) => [a.appName, a.packageName, formatBytes(a.rxBytes), formatBytes(a.txBytes), formatBytes(a.totalBytes)]).toList(),
             cellStyle: const pw.TextStyle(fontSize: 8),
           ),
           pw.SizedBox(height: 16),
@@ -55,7 +56,7 @@ class PdfReport {
   pw.Widget _timeline(List<UsagePoint> points) {
     return pw.TableHelper.fromTextArray(
       headers: const ['Start', 'End', 'Download', 'Upload', 'Total'],
-      data: points.take(30).map((p) => [p.start.toString(), p.end.toString(), bytes(p.rxBytes), bytes(p.txBytes), bytes(p.totalBytes)]).toList(),
+      data: points.take(30).map((p) => [p.start.toString(), p.end.toString(), formatBytes(p.rxBytes), formatBytes(p.txBytes), formatBytes(p.totalBytes)]).toList(),
       cellStyle: const pw.TextStyle(fontSize: 7),
     );
   }

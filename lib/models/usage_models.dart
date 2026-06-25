@@ -27,12 +27,14 @@ class MobileSnapshot {
     required this.txBytes,
     required this.time,
     this.activeSim,
+    this.isCellularActive = false,
   });
 
   final int rxBytes;
   final int txBytes;
   final DateTime time;
   final SimInfo? activeSim;
+  final bool isCellularActive;
 
   factory MobileSnapshot.fromMap(Map<dynamic, dynamic> map) {
     final sim = map['activeSim'];
@@ -41,6 +43,7 @@ class MobileSnapshot {
       txBytes: (map['txBytes'] as num?)?.toInt() ?? 0,
       time: DateTime.fromMillisecondsSinceEpoch((map['time'] as num?)?.toInt() ?? 0),
       activeSim: sim is Map ? SimInfo.fromMap(sim) : null,
+      isCellularActive: map['isCellularActive'] == true,
     );
   }
 }
@@ -121,17 +124,3 @@ class UsageReport {
         activeSim: map['activeSim'] is Map ? SimInfo.fromMap(map['activeSim'] as Map) : null,
       );
 }
-
-String bytes(num value, {int decimals = 1}) {
-  if (value <= 0) return '0 B';
-  const units = ['B', 'KB', 'MB', 'GB', 'TB'];
-  var size = value.toDouble();
-  var unit = 0;
-  while (size >= 1024 && unit < units.length - 1) {
-    size /= 1024;
-    unit++;
-  }
-  return '${size.toStringAsFixed(unit == 0 ? 0 : decimals)} ${units[unit]}';
-}
-
-String speed(num bytesPerSecond) => '${bytes(bytesPerSecond, decimals: 2)}/s';

@@ -18,6 +18,8 @@ import android.provider.Settings
 import android.telephony.SubscriptionInfo
 import android.telephony.SubscriptionManager
 import io.flutter.embedding.android.FlutterActivity
+import ir.helssa.netmeter.providers.SimInfoProvider
+import ir.helssa.netmeter.providers.TrafficStatsProvider
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -25,6 +27,8 @@ import kotlin.math.max
 
 class MainActivity : FlutterActivity() {
     private val handler = Handler(Looper.getMainLooper())
+    private val trafficStatsProvider = TrafficStatsProvider()
+    private val simInfoProvider by lazy { SimInfoProvider(this) }
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -73,11 +77,11 @@ class MainActivity : FlutterActivity() {
 
     private fun snapshot(): Map<String, Any?> {
         return mapOf(
-            "rxBytes" to clean(TrafficStats.getMobileRxBytes()),
-            "txBytes" to clean(TrafficStats.getMobileTxBytes()),
+            "rxBytes" to trafficStatsProvider.mobileRxBytes(),
+            "txBytes" to trafficStatsProvider.mobileTxBytes(),
             "time" to System.currentTimeMillis(),
             "isCellularActive" to isCellularActive(),
-            "activeSim" to activeSimMap()
+            "activeSim" to simInfoProvider.activeSimMap()
         )
     }
 
@@ -108,8 +112,8 @@ class MainActivity : FlutterActivity() {
             "totalRxBytes" to max(0L, total.rxBytes),
             "totalTxBytes" to max(0L, total.txBytes),
             "apps" to apps,
-            "sims" to simMaps(),
-            "activeSim" to activeSimMap()
+            "sims" to simInfoProvider.simMaps(),
+            "activeSim" to simInfoProvider.activeSimMap()
         )
     }
 
