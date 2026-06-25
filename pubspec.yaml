@@ -1,0 +1,23 @@
+name: android_network_meter
+description: Flutter Android app for mobile-data speed, per-app usage charts, and PDF reports.
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: '>=3.8.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  fl_chart: ^0.71.0
+  pdf: ^3.11.0
+  printing: ^5.15.0
+  permission_handler: ^12.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
