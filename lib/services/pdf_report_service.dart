@@ -18,7 +18,7 @@ class PdfReport {
     doc.addPage(
       pw.MultiPage(
         build: (_) => [
-          pw.Text('Mobile/SIM Data Usage Report', style: pw.TextStyle(fontSize: 20, fontWeight: pw.FontWeight.bold)),
+          pw.Text('Mobile/SIM Data Usage Report', style: const pw.TextStyle(fontSize: 20, fontWeight: pw.FontWeight.bold)),
           pw.SizedBox(height: 8),
           pw.Text('Range: ${report.start} - ${report.end}'),
           pw.Text('Active data SIM: ${report.activeSim?.title ?? 'Unknown'}'),
@@ -33,7 +33,7 @@ class PdfReport {
             ],
           ),
           pw.SizedBox(height: 16),
-          pw.Text('Top apps', style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold)),
+          pw.Text('Top apps', style: const pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold)),
           pw.TableHelper.fromTextArray(
             headers: const ['App', 'Package', 'Download', 'Upload', 'Total'],
             data: apps.map((a) => [a.appName, a.packageName, formatBytes(a.rxBytes), formatBytes(a.txBytes), formatBytes(a.totalBytes)]).toList(),

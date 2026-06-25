@@ -13,6 +13,8 @@
 
     <application
         android:label="Network Meter"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:name="${applicationName}"
         android:usesCleartextTraffic="false">
         <activity

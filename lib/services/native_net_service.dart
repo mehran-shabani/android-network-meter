@@ -32,7 +32,7 @@ class NativeNetService {
       'start': start.millisecondsSinceEpoch,
       'end': end.millisecondsSinceEpoch,
       'points': points,
-      if (packageName != null) 'packageName': packageName,
+      ...?(packageName == null ? null : {'packageName': packageName}),
     }) ?? const [];
     return list.whereType<Map>().map(UsagePoint.fromMap).toList();
   }
